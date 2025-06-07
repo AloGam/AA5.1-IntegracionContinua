@@ -5,18 +5,23 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Clonar repositorio
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '22'
+
+      - name: Limpiar dependencias antiguas
+        run: |
+          rm -rf node_modules
+          rm -f package-lock.json
 
       - name: Instalar dependencias
         run: npm install
 
-      - name: Ejecutar pruebas
+      - name: Dar permisos a node_modules/.bin
+        run: chmod -R +x node_modules/.bin
+
+      - name: Ejecutar pruebas con npx
         run: npx jest
